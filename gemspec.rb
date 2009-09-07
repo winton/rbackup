@@ -1,5 +1,7 @@
 GEM_NAME = 'rbackup'
-GEM_FILES = FileList['**/*'] - FileList['coverage', 'coverage/**/*', 'pkg', 'pkg/**/*']
+GEM_FILES = FileList['**/*'] - FileList[
+  'coverage', 'coverage/**/*', 'pkg', 'pkg/**/*', 'spec/fixtures/destination/*'
+]
 GEM_SPEC = Gem::Specification.new do |s|
   # == CONFIGURE ==
   s.author = "Winton Welsh"
