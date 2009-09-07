@@ -1,0 +1,4 @@
+profile_1:
+  source: SPEC/fixtures/source/*
+  destination: SPEC/fixtures/destination
+  exclude: 2.txt
