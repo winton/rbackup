@@ -15,6 +15,13 @@ Create ~/.rbackup.yml
 ---------------------
 
 <pre>
+site:
+	server:
+    source: /Users/me/site
+    destination: deploy@server:/var/www
+    exclude:
+     - .git
+     - /site/config/database.yml
 usb:
 	documents:
 	  source: ~/Documents
@@ -31,10 +38,12 @@ Backup
 ------
 
 <pre>
-rbackup documents
-	// backs up documents
+rbackup site
+	// deploys your site
 rbackup usb
-	// backs up documents and pictures
+	// back up documents and pictures
+rbackup documents
+	// back up documents only
 rbackup
-	// backs up all profiles
+	// back up and deploy everything
 </pre>
