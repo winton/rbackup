@@ -17,6 +17,23 @@ class RBackup
     get_profiles(args, @yaml)
   end
   
+  def get_profiles(input, hash, force=false)
+    @profiles ||= []
+    hash.each do |key, value|
+      next unless value.respond_to?(:keys)
+      is_profile = value['source'] && value['destination']
+      if input.include?(key) || input.empty? || force
+        if is_profile
+          @profiles << value
+        else
+          get_profiles(input, value, true)
+        end
+      elsif !is_profile
+        get_profiles(input, value, force)
+      end
+    end
+  end
+  
   def get_yaml
     if $TESTING
       config = SPEC + '/fixtures/rbackup.yml'
@@ -42,30 +59,11 @@ class RBackup
     paths.collect  { |path| path.gsub(' ', '\ ') }.join(' ')
   end
   
-  def get_profiles(input, hash, force=false)
-    @profiles ||= []
-    hash.each do |key, value|
-      next unless value.respond_to?(:keys)
-      is_profile = value['source'] && value['destination']
-      if input.include?(key) || input.empty? || force
-        if is_profile
-          @profiles << value
-        else
-          get_profiles(input, value, true)
-        end
-      elsif !is_profile
-        get_profiles(input, value, force)
-      end
-    end
-  end
-  
   def rsync(profile)
     destination = profile['destination']
     source = profile['source'].to_a
 
-    FileUtils.mkdir_p destination
-
-    options = "--numeric-ids -axzSv"
+    options = "--numeric-ids --safe-links -axzSvL"
     # --numeric-ids               don't map uid/gid values by user/group name
     # -a, --archive               recursion and preserve almost everything (-rlptgoD)
     # -x, --one-file-system       don't cross filesystem boundaries
@@ -73,12 +71,13 @@ class RBackup
     # -S, --sparse                handle sparse files efficiently
     # -v, --verbose               verbose
     
-    if destination.include?('@') || source.include?('@')
+    if destination.include?(':') || source.include?(':')
       options += ' -e ssh'
       # -e, --rsh=COMMAND         specify the remote shell to use
     else
       options += 'E'
       # -E, --extended-attributes copy extended attributes, resource forks
+      FileUtils.mkdir_p destination
     end
 
     if profile['exclude']
