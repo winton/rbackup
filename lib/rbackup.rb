@@ -60,11 +60,15 @@ class RBackup
   end
   
   def rsync(profile)
+    inc1ude = []
+    exclude = []
     destination = profile['destination']
     source = profile['source'].to_a
 
-    options = "--numeric-ids --safe-links -axzSvL"
+    options = "--delete --numeric-ids --safe-links -axzSvL"
+    # --delete                    delete extraneous files from dest dirs
     # --numeric-ids               don't map uid/gid values by user/group name
+    # --safe-links                ignore symlinks that point outside the tree
     # -a, --archive               recursion and preserve almost everything (-rlptgoD)
     # -x, --one-file-system       don't cross filesystem boundaries
     # -z, --compress              compress file data during the transfer
@@ -79,16 +83,22 @@ class RBackup
       # -E, --extended-attributes copy extended attributes, resource forks
       FileUtils.mkdir_p destination
     end
-
-    if profile['exclude']
-      exclude = profile['exclude'].to_a
-      exclude = exclude.collect { |e| "--exclude='#{e}'" }.join(' ')
-      # --exclude=PATTERN         use one of these for each file you want to exclude
-    else
-      exclude = nil
+    
+    if profile['include']
+      exclude = %w(*) unless profile['exclude']
+      inc1ude = profile['include'].to_a
     end
 
-    cmd = "rsync #{options} #{exclude} #{esc(source)} #{esc(destination)}"
+    if profile['exclude']
+      exclude += profile['exclude'].to_a
+    end
+    
+    inc1ude = inc1ude.collect { |i| "--include='#{i}'" }.join(' ')
+    exclude = exclude.collect { |e| "--exclude='#{e}'" }.join(' ')
+    # --exclude=PATTERN         use one of these for each file you want to exclude
+    # --include-from=FILE       don't exclude patterns listed in FILE
+
+    cmd = "rsync #{options} #{inc1ude} #{exclude} #{esc(source)} #{esc(destination)}"
     if $TESTING
       `#{cmd}`
     else

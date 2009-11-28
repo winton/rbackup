@@ -32,6 +32,8 @@ usb:
   pictures:
     source: ~/Pictures
     destination: /Volumes/USB Key
+    include:
+      - Favorites
 </pre>
 
 Backup

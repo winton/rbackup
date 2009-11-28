@@ -43,4 +43,13 @@ describe RBackup do
     File.read(SPEC + '/fixtures/destination/2.txt').should == '2'
     File.read(SPEC + '/fixtures/destination/3.txt').should == '3'
   end
+  
+  it "should backup profile_6" do
+    RBackup.new('profile_6').run
+    File.exists?(SPEC + '/fixtures/destination/1.txt').should == false
+    File.exists?(SPEC + '/fixtures/destination/2.txt').should == true
+    File.exists?(SPEC + '/fixtures/destination/3.txt').should == true
+    File.read(SPEC + '/fixtures/destination/2.txt').should == '2'
+    File.read(SPEC + '/fixtures/destination/3.txt').should == '3'
+  end
 end
