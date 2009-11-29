@@ -3,12 +3,16 @@ rbackup
 
 Backup your stuff with Ruby and Rsync.
 
+Compatibility
+-------------
+
+Tested with Ruby 1.8.6, 1.8.7, and 1.9.1.
+
 Setup
 -----
 
 <pre>
-gem sources -a http://gems.github.com
-sudo gem install winton-rbackup
+sudo gem install rbackup  --source http://gemcutter.org
 </pre>
 
 Create ~/.rbackup.yml

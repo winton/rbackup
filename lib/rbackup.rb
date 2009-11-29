@@ -54,7 +54,7 @@ class RBackup
   end
   
   def esc(paths)
-    paths = paths.to_a
+    paths = [ paths ].flatten
     paths.collect! { |path| path.gsub('SPEC', SPEC) } if $TESTING
     paths.collect  { |path| path.gsub(' ', '\ ') }.join(' ')
   end
@@ -63,7 +63,7 @@ class RBackup
     inc1ude = []
     exclude = []
     destination = profile['destination']
-    source = profile['source'].to_a
+    source = [ profile['source'] ].flatten
 
     options = "--delete --numeric-ids --safe-links -axzSvL"
     # --delete                    delete extraneous files from dest dirs
@@ -86,11 +86,11 @@ class RBackup
     
     if profile['include']
       exclude = %w(*) unless profile['exclude']
-      inc1ude = profile['include'].to_a
+      inc1ude = [ profile['include'] ].flatten
     end
 
     if profile['exclude']
-      exclude += profile['exclude'].to_a
+      exclude += [ profile['exclude'] ].flatten
     end
     
     inc1ude = inc1ude.collect { |i| "--include='#{i}'" }.join(' ')
