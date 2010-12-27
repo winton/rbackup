@@ -68,8 +68,7 @@ class RBackup
     destination = profile['destination']
     source = [ profile['source'] ].flatten
 
-    options = "--delete --numeric-ids --safe-links -axzSvL"
-    # --delete                    delete extraneous files from dest dirs
+    options = "--numeric-ids --safe-links -axzSvL"
     # --numeric-ids               don't map uid/gid values by user/group name
     # --safe-links                ignore symlinks that point outside the tree
     # -a, --archive               recursion and preserve almost everything (-rlptgoD)
@@ -77,6 +76,11 @@ class RBackup
     # -z, --compress              compress file data during the transfer
     # -S, --sparse                handle sparse files efficiently
     # -v, --verbose               verbose
+    
+    if profile['delete'].nil? || profile['delete']
+      options = "--delete " + options
+      # --delete                  delete extraneous files from dest dirs
+    end
     
     if destination.include?(':') || source.include?(':')
       options += ' -e ssh'
