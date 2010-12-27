@@ -2,7 +2,8 @@ require 'rubygems'
 require 'rake'
 require 'rake/gempackagetask'
 require 'spec/rake/spectask'
-require 'gemspec'
+
+require "#{File.dirname(__FILE__)}/gemspec"
 
 desc "Generate gemspec"
 task :gemspec do
