@@ -15,7 +15,8 @@ class RBackup
   
   attr_accessor :profiles, :yaml
   
-  def initialize(*args)
+  def initialize(reverse, *args)
+    @reverse = reverse
     get_yaml
     get_profiles(args, @yaml)
   end
@@ -38,8 +39,8 @@ class RBackup
   end
   
   def get_yaml
-    if $TESTING
-      config = SPEC + '/fixtures/rbackup.yml'
+    if $rbackup_config
+      config = $rbackup_config
     else
       config = File.expand_path("~/.rbackup.yml")
     end
@@ -66,7 +67,14 @@ class RBackup
     inc1ude = []
     exclude = []
     destination = profile['destination']
-    source = [ profile['source'] ].flatten
+    source = profile['source']
+    
+    if @reverse
+      last = source.split('/').last
+      source = source.split('/')[0..-2].join('/')
+      destination = [ destination, '/', last ].join('/')
+      destination, source = source, destination
+    end
 
     options = "--numeric-ids --safe-links -axzSvL"
     # --numeric-ids               don't map uid/gid values by user/group name

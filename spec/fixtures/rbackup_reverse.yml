@@ -1,0 +1,27 @@
+profile_1:
+  source: SPEC/fixtures/destination/*
+  destination: SPEC/fixtures/source
+  exclude: 1.txt
+profile_2:
+  source: SPEC/fixtures/destination/*
+  destination: SPEC/fixtures/source
+  exclude: 2.txt
+profile_3:
+  profile_4:
+    source: SPEC/fixtures/destination/*
+    destination: SPEC/fixtures/source
+    exclude:
+      - 1.txt
+      - 2.txt
+  profile_5:
+    source: SPEC/fixtures/destination/*
+    destination: SPEC/fixtures/source
+    exclude:
+      - 1.txt
+      - 3.txt
+  profile_6:
+    source: SPEC/fixtures/destination/*
+    destination: SPEC/fixtures/source
+    include:
+      - 2.txt
+      - 3.txt

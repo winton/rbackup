@@ -3,4 +3,4 @@
 $:.push File.expand_path("#{File.dirname(__FILE__)}/../lib")
 require 'rbackup'
 
-RBackup.new(*ARGV).run
+RBackup.new(ARGV.delete('--reverse'), *ARGV).run
